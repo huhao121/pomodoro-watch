@@ -9,7 +9,7 @@ extern "C" {
 /* 时长（毫秒）。
  * 测试模式：POMO_TEST_MODE 置 1 → 工作 25 秒 / 休息 5 秒，方便快速验证。
  * 正式模式：置 0 → 工作 25 分钟 / 休息 5 分钟。 */
-#define POMO_TEST_MODE    1
+#define POMO_TEST_MODE    0
 
 #if POMO_TEST_MODE
 #define POMO_WORK_MS      (25u * 1000u)        /* 25 秒 */
