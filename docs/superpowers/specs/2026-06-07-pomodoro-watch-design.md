@@ -54,9 +54,13 @@ pomodoro-watch/
 │       ├── CMakeLists.txt
 │       ├── include/pomodoro_fsm.h
 │       ├── pomodoro_fsm.c
-│       └── test/              # 主机端 gcc 单测
-│           ├── Makefile
+│       └── test/              # 组件内 Unity 测试（在 Linux 目标上跑）
 │           └── test_pomodoro_fsm.c
+├── test/                      # 主机端测试 runner 工程（ESP-IDF Linux 目标）
+│   ├── CMakeLists.txt
+│   └── main/
+│       ├── CMakeLists.txt     # 依赖 unity + pomodoro_fsm
+│       └── test_main.c        # UNITY_BEGIN/END runner
 ├── docs/superpowers/specs/...
 └── README.md
 ```
@@ -165,7 +169,15 @@ void ui_flash(void);                       // 触发结束闪烁动画
 
 ## 8. 测试
 
-### 主机端单元测试（components/pomodoro_fsm/test，gcc）
+### 主机端单元测试（ESP-IDF Linux 目标 + Unity）
+
+用 Espressif 官方的 **Linux 目标**（`idf.py --preview set-target linux`）在 PC 上原生跑组件逻辑测试，
+配合 ESP-IDF 自带的 **Unity** 测试框架，无需真机、无需交叉编译。`pomodoro_fsm` 纯 C 无 ESP 依赖，
+直接被链接进 Linux 目标的测试工程。
+
+结构：`pomodoro_fsm/test/test_pomodoro_fsm.c` 用 `TEST_CASE(...)` 写用例；顶层 `test/` 是一个最小
+ESP-IDF 工程，`main` 依赖 `unity` + `pomodoro_fsm`，在 `test_main.c` 里 `UNITY_BEGIN()` →
+`unity_run_all_tests()` → `UNITY_END()`。
 
 先写测试再写实现（TDD）。覆盖：
 
@@ -178,7 +190,8 @@ void ui_flash(void);                       // 触发结束闪烁动画
 7. `reset`：remaining 回当前阶段 total，status==PAUSED。
 8. `dt` 钳制：传入超大 dt 只扣 `POMO_MAX_TICK_MS`。
 
-测试用纯 gcc 编译运行（`make` in test/），断言失败非零退出。
+运行：`cd test && idf.py --preview set-target linux && idf.py build && ./build/*.elf`
+（或 `idf.py build monitor`）。Unity 失败时非零退出，CI 友好。
 
 ### 设备端手动验收清单
 
@@ -192,7 +205,7 @@ void ui_flash(void);                       // 触发结束闪烁动画
 ## 9. 交付与构建
 
 - 顶层 `idf.py set-target esp32s3 && idf.py build flash monitor`（需先 source IDF 环境）。
-- 主机测试：`cd components/pomodoro_fsm/test && make && ./test_pomodoro_fsm`。
+- 主机测试（Linux 目标 + Unity）：`cd test && idf.py --preview set-target linux && idf.py build && ./build/*.elf`。
 - README 说明环境激活、编译、烧录、跑测试步骤。
 - 本会话不替用户烧录硬件；提供命令与验收清单。
 
