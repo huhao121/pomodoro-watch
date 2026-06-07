@@ -1,5 +1,4 @@
 #include "pomodoro_fsm.h"
-#include <string.h>
 
 void pomo_init(pomo_fsm_t *f)
 {
@@ -22,7 +21,9 @@ void pomo_toggle(pomo_fsm_t *f)
 void pomo_reset(pomo_fsm_t *f)
 {
     f->remaining_ms = f->total_ms;
-    f->status = POMO_PAUSED;
+    if (f->status != POMO_IDLE) {
+        f->status = POMO_PAUSED;
+    }
 }
 
 pomo_event_t pomo_tick(pomo_fsm_t *f, uint32_t dt_ms)
