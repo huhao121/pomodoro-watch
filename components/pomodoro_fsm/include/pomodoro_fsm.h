@@ -6,9 +6,18 @@
 extern "C" {
 #endif
 
-/* 时长（毫秒）。改这里即可调整番茄钟节奏。 */
-#define POMO_WORK_MS      (25u * 60u * 1000u)
-#define POMO_BREAK_MS     (5u * 60u * 1000u)
+/* 时长（毫秒）。
+ * 测试模式：POMO_TEST_MODE 置 1 → 工作 25 秒 / 休息 5 秒，方便快速验证。
+ * 正式模式：置 0 → 工作 25 分钟 / 休息 5 分钟。 */
+#define POMO_TEST_MODE    1
+
+#if POMO_TEST_MODE
+#define POMO_WORK_MS      (25u * 1000u)        /* 25 秒 */
+#define POMO_BREAK_MS     (5u * 1000u)         /* 5 秒 */
+#else
+#define POMO_WORK_MS      (25u * 60u * 1000u)  /* 25 分钟 */
+#define POMO_BREAK_MS     (5u * 60u * 1000u)   /* 5 分钟 */
+#endif
 /* 单次 tick 的 dt 上限，防止休眠/卡顿后时间跳变。 */
 #define POMO_MAX_TICK_MS  (2000u)
 
