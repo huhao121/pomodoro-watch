@@ -14,8 +14,8 @@ void ui_create(lv_event_cb_t on_toggle, lv_event_cb_t on_reset);
 /* 按快照刷新：圆环值、MM:SS、阶段标签、按钮文字与配色。 */
 void ui_render(const pomo_snapshot_t *s);
 
-/* 阶段结束时的全屏闪烁（在顶层图层做 3 次明暗）。color 为新阶段色。 */
-void ui_flash(lv_color_t color);
+/* 阶段结束时的全屏闪烁（在顶层图层做 3 次明暗）。颜色由 phase 决定，内部使用 phase_color()。 */
+void ui_flash(pomo_phase_t phase);
 
 #ifdef __cplusplus
 }

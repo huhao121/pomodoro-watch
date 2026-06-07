@@ -124,9 +124,9 @@ static void flash_ready_cb(lv_anim_t *a)
     lv_obj_add_flag((lv_obj_t *)a->var, LV_OBJ_FLAG_HIDDEN);
 }
 
-void ui_flash(lv_color_t color)
+void ui_flash(pomo_phase_t phase)
 {
-    lv_obj_set_style_bg_color(s_overlay, color, 0);
+    lv_obj_set_style_bg_color(s_overlay, phase_color(phase), 0);
     lv_obj_remove_flag(s_overlay, LV_OBJ_FLAG_HIDDEN);
 
     lv_anim_t a;
